@@ -1,0 +1,23 @@
+# Datos crudos y procesados no se suben a GitHub
+datos/crudos/*
+datos/procesados/*
+!datos/crudos/.gitkeep
+!datos/procesados/.gitkeep
+
+# Archivos pesados de datos
+*.sav
+*.dta
+*.csv
+*.xlsx
+*.parquet
+*.rds
+
+# Archivos temporales de R
+.Rhistory
+.RData
+.Ruserdata
+
+# renv
+renv/library/
+renv/staging/
+.Rproj.user
