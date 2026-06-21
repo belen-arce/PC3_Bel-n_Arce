@@ -18,6 +18,7 @@ Para el análisis se consideran módulos vinculados con características del hog
 
 ## Estructura del repositorio
 
+```Text
 PC3_Belén_Arce/
 ├── datos/
 │   ├── crudos/
