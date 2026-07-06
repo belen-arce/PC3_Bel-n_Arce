@@ -18,104 +18,113 @@ base_acondicionada <- read_parquet(
 )
 
 # ------------------------------------------------------------------------------
-# 2. Crear variables dummy y recodificaciones
+# 2. Crear indicadores de vulnerabilidad material
 # ------------------------------------------------------------------------------
 
 base_clasificada <- base_acondicionada %>%
   mutate(
-    # Dummies de condiciones materiales del hogar
+    # Piso de tierra: P103 = 6
     piso_tierra = case_when(
       as.numeric(material_piso) == 6 ~ 1,
       !is.na(material_piso) ~ 0,
       TRUE ~ NA_real_
     ),
     
+    # Agua que no proviene de red pública dentro/fuera de la vivienda o edificio
     agua_no_red_publica = case_when(
       as.numeric(procedencia_agua) %in% c(1, 2) ~ 0,
       !is.na(procedencia_agua) ~ 1,
       TRUE ~ NA_real_
     ),
     
+    # Servicio higiénico que no está conectado a red pública
     saneamiento_no_red_publica = case_when(
       as.numeric(servicio_higienico) %in% c(1, 2) ~ 0,
       !is.na(servicio_higienico) ~ 1,
       TRUE ~ NA_real_
     ),
     
+    # Internet: P1144 usa 1 = tiene conexión, 0 = pase/no registra conexión
     sin_internet = case_when(
       as.numeric(internet) == 1 ~ 0,
-      as.numeric(internet) == 2 ~ 1,
-      TRUE ~ NA_real_
-    ),
-    
-    # Variable personal: posible dependencia por edad
-    persona_dependiente = case_when(
-      edad < 18 | edad >= 60 ~ 1,
-      edad >= 18 & edad < 60 ~ 0,
+      as.numeric(internet) == 0 ~ 1,
       TRUE ~ NA_real_
     )
   )
 
 # ------------------------------------------------------------------------------
-# 3. Crear índice de vulnerabilidad
+# 3. Crear índice simple de vulnerabilidad
 # ------------------------------------------------------------------------------
+
+indicadores_vulnerabilidad <- c(
+  "piso_tierra",
+  "agua_no_red_publica",
+  "saneamiento_no_red_publica",
+  "sin_internet"
+)
 
 base_clasificada <- base_clasificada %>%
   mutate(
-    indice_vulnerabilidad_simple = rowSums(
-      across(
-        c(
-          piso_tierra,
-          agua_no_red_publica,
-          saneamiento_no_red_publica,
-          sin_internet,
-          persona_dependiente
-        )
-      ),
-      na.rm = TRUE
+    n_indicadores_validos = rowSums(
+      !is.na(pick(all_of(indicadores_vulnerabilidad)))
+    ),
+    
+    indice_vulnerabilidad_simple = if_else(
+      n_indicadores_validos >= 3,
+      rowSums(pick(all_of(indicadores_vulnerabilidad)), na.rm = TRUE),
+      NA_real_
     ),
     
     nivel_vulnerabilidad = case_when(
       indice_vulnerabilidad_simple <= 1 ~ "Baja",
       indice_vulnerabilidad_simple == 2 ~ "Media",
       indice_vulnerabilidad_simple >= 3 ~ "Alta",
-      TRUE ~ NA_character_
+      TRUE ~ "Sin información"
     )
   )
 
 # ------------------------------------------------------------------------------
-# 4. Crear tipología: olla común y vulnerabilidad
+# 4. Crear tipología entre acceso a olla común y vulnerabilidad
 # ------------------------------------------------------------------------------
 
 base_clasificada <- base_clasificada %>%
   mutate(
-    registra_olla_comun = case_when(
-      str_detect(acceso_olla_comun, "Sí") ~ "Registra olla común",
-      TRUE ~ "No registra olla común"
+    acceso_olla_clasificado = case_when(
+      acceso_olla_comun == "Sí obtuvo alimentos de olla común" ~ "Accedió a olla común",
+      acceso_olla_comun == "No obtuvo alimentos de olla común" ~ "No accedió a olla común",
+      TRUE ~ "Sin información"
     ),
     
     tipologia_olla_vulnerabilidad = case_when(
-      registra_olla_comun == "Registra olla común" &
-        nivel_vulnerabilidad == "Alta" ~ "Registra olla común y vulnerabilidad alta",
+      acceso_olla_clasificado == "Accedió a olla común" &
+        nivel_vulnerabilidad == "Alta" ~ "Accedió a olla común y vulnerabilidad alta",
       
-      registra_olla_comun == "Registra olla común" &
-        nivel_vulnerabilidad %in% c("Baja", "Media") ~ "Registra olla común y vulnerabilidad baja/media",
+      acceso_olla_clasificado == "Accedió a olla común" &
+        nivel_vulnerabilidad %in% c("Baja", "Media") ~ "Accedió a olla común y vulnerabilidad baja/media",
       
-      registra_olla_comun == "No registra olla común" &
-        nivel_vulnerabilidad == "Alta" ~ "No registra olla común y vulnerabilidad alta",
+      acceso_olla_clasificado == "No accedió a olla común" &
+        nivel_vulnerabilidad == "Alta" ~ "No accedió a olla común y vulnerabilidad alta",
       
-      registra_olla_comun == "No registra olla común" &
-        nivel_vulnerabilidad %in% c("Baja", "Media") ~ "No registra olla común y vulnerabilidad baja/media",
+      acceso_olla_clasificado == "No accedió a olla común" &
+        nivel_vulnerabilidad %in% c("Baja", "Media") ~ "No accedió a olla común y vulnerabilidad baja/media",
       
-      TRUE ~ NA_character_
+      TRUE ~ "Sin información"
     )
   )
 
 # ------------------------------------------------------------------------------
-# 5. Reportes de clasificación
+# 5. Crear base a nivel hogar para reportes
 # ------------------------------------------------------------------------------
 
-reporte_nivel_vulnerabilidad <- base_clasificada %>%
+base_hogares_clasificada <- base_clasificada %>%
+  distinct(conglome, vivienda, hogar, .keep_all = TRUE)
+
+# ------------------------------------------------------------------------------
+# 6. Reportes de clasificación
+# ------------------------------------------------------------------------------
+
+reporte_nivel_vulnerabilidad <- base_hogares_clasificada %>%
+  filter(nivel_vulnerabilidad != "Sin información") %>%
   count(nivel_vulnerabilidad) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2))
 
@@ -124,7 +133,12 @@ write_csv(
   "outputs/tablas/reporte_clasificacion_nivel_vulnerabilidad.csv"
 )
 
-reporte_tipologia <- base_clasificada %>%
+reporte_tipologia <- base_hogares_clasificada %>%
+  filter(
+    tipologia_olla_vulnerabilidad != "Sin información",
+    acceso_olla_clasificado != "Sin información",
+    nivel_vulnerabilidad != "Sin información"
+  ) %>%
   count(tipologia_olla_vulnerabilidad) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2))
 
@@ -133,13 +147,12 @@ write_csv(
   "outputs/tablas/reporte_clasificacion_tipologia_olla_vulnerabilidad.csv"
 )
 
-reporte_dummies <- base_clasificada %>%
+reporte_dummies <- base_hogares_clasificada %>%
   summarise(
     porcentaje_piso_tierra = round(mean(piso_tierra, na.rm = TRUE) * 100, 2),
     porcentaje_agua_no_red_publica = round(mean(agua_no_red_publica, na.rm = TRUE) * 100, 2),
     porcentaje_saneamiento_no_red_publica = round(mean(saneamiento_no_red_publica, na.rm = TRUE) * 100, 2),
-    porcentaje_sin_internet = round(mean(sin_internet, na.rm = TRUE) * 100, 2),
-    porcentaje_persona_dependiente = round(mean(persona_dependiente, na.rm = TRUE) * 100, 2)
+    porcentaje_sin_internet = round(mean(sin_internet, na.rm = TRUE) * 100, 2)
   ) %>%
   pivot_longer(
     cols = everything(),
@@ -153,32 +166,36 @@ write_csv(
 )
 
 # ------------------------------------------------------------------------------
-# 6. Gráfico de clasificación
+# 7. Gráfico de clasificación
 # ------------------------------------------------------------------------------
 
 grafico_tipologia <- ggplot(
   reporte_tipologia,
-  aes(x = reorder(tipologia_olla_vulnerabilidad, n), y = n)
+  aes(x = reorder(tipologia_olla_vulnerabilidad, porcentaje), y = porcentaje)
 ) +
   geom_col() +
+  geom_text(aes(label = paste0(porcentaje, "%")), hjust = -0.1, size = 3.6) +
   coord_flip() +
   labs(
-    title = "Tipología de olla común y vulnerabilidad",
-    x = "Tipología",
-    y = "Número de personas"
+    title = "Tipología entre acceso a olla común y vulnerabilidad",
+    subtitle = "Porcentaje calculado sobre hogares con información válida",
+    x = NULL,
+    y = "Porcentaje de hogares"
   ) +
-  theme_minimal()
+  ylim(0, max(reporte_tipologia$porcentaje) + 10) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
 
 ggsave(
-  filename = "outputs/graficos/grafico_clasificacion_tipologia_olla_vulnerabilidad.png",
-  plot = grafico_tipologia,
-  width = 9,
+  "outputs/graficos/grafico_clasificacion_tipologia_olla_vulnerabilidad.png",
+  grafico_tipologia,
+  width = 10,
   height = 6,
   bg = "white"
 )
 
 # ------------------------------------------------------------------------------
-# 7. Guardar base clasificada
+# 8. Guardar base clasificada
 # ------------------------------------------------------------------------------
 
 write_parquet(

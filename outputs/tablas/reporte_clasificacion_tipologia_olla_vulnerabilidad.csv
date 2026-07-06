@@ -1,3 +1,5 @@
 tipologia_olla_vulnerabilidad,n,porcentaje
-Registra olla común y vulnerabilidad alta,19357,16.44
-Registra olla común y vulnerabilidad baja/media,98364,83.56
+Accedió a olla común y vulnerabilidad alta,4,0.01
+Accedió a olla común y vulnerabilidad baja/media,73,0.22
+No accedió a olla común y vulnerabilidad alta,3215,9.68
+No accedió a olla común y vulnerabilidad baja/media,29922,90.09

@@ -1,3 +1,5 @@
 area_residencia,acceso_olla_comun,n,porcentaje
-Rural,Sí registra información en módulo 613,11660,100
-Urbana,Sí registra información en módulo 613,22031,100
+Rural,No obtuvo alimentos de olla común,11567,99.7
+Rural,Sí obtuvo alimentos de olla común,35,0.3
+Urbana,No obtuvo alimentos de olla común,21570,99.81
+Urbana,Sí obtuvo alimentos de olla común,42,0.19

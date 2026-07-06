@@ -1,6 +1,9 @@
 grupo_edad,acceso_olla_comun,n,porcentaje
-18 a 29,Sí registra información en módulo 613,18564,100
-30 a 59,Sí registra información en módulo 613,41582,100
-60 a más,Sí registra información en módulo 613,19559,100
-Menor de 18,Sí registra información en módulo 613,34050,100
-NA,Sí registra información en módulo 613,3966,100
+18 a 29,No obtuvo alimentos de olla común,18261,99.78
+18 a 29,Sí obtuvo alimentos de olla común,40,0.22
+30 a 59,No obtuvo alimentos de olla común,40842,99.72
+30 a 59,Sí obtuvo alimentos de olla común,113,0.28
+60 a más,No obtuvo alimentos de olla común,19208,99.85
+60 a más,Sí obtuvo alimentos de olla común,28,0.15
+Menor de 18,No obtuvo alimentos de olla común,33471,99.66
+Menor de 18,Sí obtuvo alimentos de olla común,115,0.34

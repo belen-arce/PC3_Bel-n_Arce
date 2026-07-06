@@ -100,28 +100,45 @@ personas_200 <- modulo_200 %>%
   )
 
 # ------------------------------------------------------------------------------
-# 6. Preparación del módulo 613: olla común
+# 6. Preparar módulo 613: olla común
 # ------------------------------------------------------------------------------
 
-# Lo resumimos primero a nivel hogar antes del merge.
-# Así se evita que el cruce duplique innecesariamente personas u hogares.
+# p613a = existencia de olla común en la zona
+# p613b = hogar obtuvo/compró/recibió alimentos de olla común
+
+num <- function(x) suppressWarnings(as.numeric(x))
 
 olla_613_hogar <- modulo_613 %>%
   group_by(across(all_of(llave_hogar))) %>%
   summarise(
-    registros_olla_comun = n(),
-    across(
-      .cols = everything(),
-      .fns = ~ sum(!is.na(.)),
-      .names = "no_na_{.col}"
+    registros_modulo_613 = n(),
+    
+    existe_olla_zona_num = case_when(
+      any(num(p613a) == 1, na.rm = TRUE) ~ 1,
+      any(num(p613a) == 2, na.rm = TRUE) ~ 0,
+      TRUE ~ NA_real_
     ),
+    
+    obtuvo_alimentos_olla_num = case_when(
+      any(num(p613b) == 1, na.rm = TRUE) ~ 1,
+      any(num(p613b) == 2, na.rm = TRUE) ~ 0,
+      any(num(p613a) == 2, na.rm = TRUE) ~ 0,
+      TRUE ~ NA_real_
+    ),
+    
     .groups = "drop"
   ) %>%
   mutate(
-    acceso_olla_comun = if_else(
-      registros_olla_comun > 0,
-      "Sí registra información en módulo 613",
-      "No registra información en módulo 613"
+    existencia_olla_zona = case_when(
+      existe_olla_zona_num == 1 ~ "Sí existió olla común en la zona",
+      existe_olla_zona_num == 0 ~ "No existió olla común en la zona",
+      TRUE ~ "Sin información"
+    ),
+    
+    acceso_olla_comun = case_when(
+      obtuvo_alimentos_olla_num == 1 ~ "Sí obtuvo alimentos de olla común",
+      obtuvo_alimentos_olla_num == 0 ~ "No obtuvo alimentos de olla común",
+      TRUE ~ "Sin información"
     )
   )
 # ------------------------------------------------------------------------------
@@ -147,4 +164,3 @@ write_parquet(
   base_integrada,
   "datos/procesados/enaho_ollas_comunes_base_integrada.parquet"
 )
-

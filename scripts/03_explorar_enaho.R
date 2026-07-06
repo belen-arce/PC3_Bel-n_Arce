@@ -2,7 +2,7 @@
 # Proyecto: Ollas comunes, vulnerabilidad alimentaria y condiciones de vida usando datos de la ENAHO
 # Script: 03_explorar_enaho.R
 # Autora: Belén Arce
-# Objetivo: Realizar exploración univariada y bivariada de la base acondicionada
+# Objetivo: Realizar exploración univariada y bivariada 
 # Fecha: 05-07-2026
 # ==============================================================================
 
@@ -18,7 +18,7 @@ base_acondicionada <- read_parquet(
 )
 
 # ------------------------------------------------------------------------------
-# 2. Crear base a nivel hogar y base a nivel persona
+# 2. Crear bases de trabajo
 # ------------------------------------------------------------------------------
 
 base_personas <- base_acondicionada
@@ -26,11 +26,22 @@ base_personas <- base_acondicionada
 base_hogares <- base_acondicionada %>%
   distinct(conglome, vivienda, hogar, .keep_all = TRUE)
 
+respuestas_validas_olla <- c(
+  "No obtuvo alimentos de olla común",
+  "Sí obtuvo alimentos de olla común"
+)
+
+base_hogares_olla_valida <- base_hogares %>%
+  filter(acceso_olla_comun %in% respuestas_validas_olla)
+
+base_personas_olla_valida <- base_personas %>%
+  filter(acceso_olla_comun %in% respuestas_validas_olla)
+
 # ------------------------------------------------------------------------------
-# 3. Exploración univariada
+# 3. Tablas univariadas
 # ------------------------------------------------------------------------------
 
-tabla_acceso_olla <- base_hogares %>%
+tabla_acceso_olla <- base_hogares_olla_valida %>%
   count(acceso_olla_comun) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2))
 
@@ -40,6 +51,7 @@ write_csv(
 )
 
 tabla_area <- base_hogares %>%
+  filter(area_residencia != "Sin información") %>%
   count(area_residencia) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2))
 
@@ -49,6 +61,7 @@ write_csv(
 )
 
 tabla_sexo <- base_personas %>%
+  filter(sexo_recodificado != "Sin información") %>%
   count(sexo_recodificado) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2))
 
@@ -58,6 +71,7 @@ write_csv(
 )
 
 tabla_grupo_edad <- base_personas %>%
+  filter(grupo_edad != "Sin información") %>%
   count(grupo_edad) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2))
 
@@ -67,48 +81,11 @@ write_csv(
 )
 
 # ------------------------------------------------------------------------------
-# 4. Gráficos univariados
+# 4. Tablas bivariadas
 # ------------------------------------------------------------------------------
 
-grafico_acceso_olla <- ggplot(tabla_acceso_olla, aes(x = acceso_olla_comun, y = n)) +
-  geom_col() +
-  labs(
-    title = "Hogares según registro de información en módulo de olla común",
-    x = "Registro en módulo 613",
-    y = "Número de hogares"
-  ) +
-  theme_minimal()
-
-ggsave(
-  filename = "outputs/graficos/grafico_eda_acceso_olla.png",
-  plot = grafico_acceso_olla,
-  width = 8,
-  height = 6,
-  bg = "white"
-)
-
-grafico_area <- ggplot(tabla_area, aes(x = area_residencia, y = n)) +
-  geom_col() +
-  labs(
-    title = "Hogares según área de residencia",
-    x = "Área de residencia",
-    y = "Número de hogares"
-  ) +
-  theme_minimal()
-
-ggsave(
-  filename = "outputs/graficos/grafico_eda_area_residencia.png",
-  plot = grafico_area,
-  width = 8,
-  height = 6,
-  bg = "white"
-)
-
-# ------------------------------------------------------------------------------
-# 5. Exploración bivariada
-# ------------------------------------------------------------------------------
-
-tabla_olla_area <- base_hogares %>%
+tabla_olla_area <- base_hogares_olla_valida %>%
+  filter(area_residencia != "Sin información") %>%
   count(area_residencia, acceso_olla_comun) %>%
   group_by(area_residencia) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2)) %>%
@@ -119,7 +96,8 @@ write_csv(
   "outputs/tablas/eda_bivariado_olla_por_area.csv"
 )
 
-tabla_olla_sexo <- base_personas %>%
+tabla_olla_sexo <- base_personas_olla_valida %>%
+  filter(sexo_recodificado != "Sin información") %>%
   count(sexo_recodificado, acceso_olla_comun) %>%
   group_by(sexo_recodificado) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2)) %>%
@@ -130,7 +108,8 @@ write_csv(
   "outputs/tablas/eda_bivariado_olla_por_sexo.csv"
 )
 
-tabla_olla_edad <- base_personas %>%
+tabla_olla_edad <- base_personas_olla_valida %>%
+  filter(grupo_edad != "Sin información") %>%
   count(grupo_edad, acceso_olla_comun) %>%
   group_by(grupo_edad) %>%
   mutate(porcentaje = round(n / sum(n) * 100, 2)) %>%
@@ -142,6 +121,58 @@ write_csv(
 )
 
 # ------------------------------------------------------------------------------
+# 5. Gráficos univariados
+# ------------------------------------------------------------------------------
+
+grafico_acceso_olla <- ggplot(
+  tabla_acceso_olla,
+  aes(x = reorder(acceso_olla_comun, porcentaje), y = porcentaje)
+) +
+  geom_col() +
+  geom_text(aes(label = paste0(porcentaje, "%")), hjust = -0.1, size = 4) +
+  coord_flip() +
+  labs(
+    title = "Hogares según acceso a alimentos de olla común",
+    subtitle = "Porcentaje calculado sobre respuestas válidas",
+    x = NULL,
+    y = "Porcentaje de hogares"
+  ) +
+  ylim(0, max(tabla_acceso_olla$porcentaje) + 10) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
+
+ggsave(
+  "outputs/graficos/grafico_eda_acceso_olla.png",
+  grafico_acceso_olla,
+  width = 9,
+  height = 6,
+  bg = "white"
+)
+
+grafico_area <- ggplot(
+  tabla_area,
+  aes(x = area_residencia, y = porcentaje)
+) +
+  geom_col() +
+  geom_text(aes(label = paste0(porcentaje, "%")), vjust = -0.3, size = 4) +
+  labs(
+    title = "Hogares según área de residencia",
+    x = "Área de residencia",
+    y = "Porcentaje de hogares"
+  ) +
+  ylim(0, max(tabla_area$porcentaje) + 10) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
+
+ggsave(
+  "outputs/graficos/grafico_eda_area_residencia.png",
+  grafico_area,
+  width = 8,
+  height = 6,
+  bg = "white"
+)
+
+# ------------------------------------------------------------------------------
 # 6. Gráficos bivariados
 # ------------------------------------------------------------------------------
 
@@ -150,18 +181,30 @@ grafico_olla_area <- ggplot(
   aes(x = area_residencia, y = porcentaje, fill = acceso_olla_comun)
 ) +
   geom_col(position = "dodge") +
+  geom_text(
+    aes(label = paste0(porcentaje, "%")),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 3.5
+  ) +
   labs(
-    title = "Registro de olla común según área de residencia",
+    title = "Acceso a alimentos de olla común según área de residencia",
+    subtitle = "Porcentaje dentro de cada área, usando respuestas válidas",
     x = "Área de residencia",
     y = "Porcentaje",
-    fill = "Registro de olla común"
+    fill = "Acceso a olla común"
   ) +
-  theme_minimal()
+  ylim(0, 105) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
 
 ggsave(
-  filename = "outputs/graficos/grafico_eda_olla_por_area.png",
-  plot = grafico_olla_area,
-  width = 8,
+  "outputs/graficos/grafico_eda_olla_por_area.png",
+  grafico_olla_area,
+  width = 9,
   height = 6,
   bg = "white"
 )
@@ -171,18 +214,30 @@ grafico_olla_edad <- ggplot(
   aes(x = grupo_edad, y = porcentaje, fill = acceso_olla_comun)
 ) +
   geom_col(position = "dodge") +
+  geom_text(
+    aes(label = paste0(porcentaje, "%")),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 3.2
+  ) +
   labs(
-    title = "Registro de olla común según grupo de edad",
+    title = "Acceso a alimentos de olla común según grupo de edad",
+    subtitle = "Porcentaje dentro de cada grupo de edad, usando respuestas válidas",
     x = "Grupo de edad",
     y = "Porcentaje",
-    fill = "Registro de olla común"
+    fill = "Acceso a olla común"
   ) +
-  theme_minimal()
+  ylim(0, 105) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
 
 ggsave(
-  filename = "outputs/graficos/grafico_eda_olla_por_grupo_edad.png",
-  plot = grafico_olla_edad,
-  width = 8,
+  "outputs/graficos/grafico_eda_olla_por_grupo_edad.png",
+  grafico_olla_edad,
+  width = 9,
   height = 6,
   bg = "white"
 )

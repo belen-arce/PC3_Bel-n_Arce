@@ -27,7 +27,7 @@ names(base_integrada)
 glimpse(base_integrada)
 
 # ------------------------------------------------------------------------------
-# 3. Selección de variables de interés
+# 3. Seleccionar variables de interés
 # ------------------------------------------------------------------------------
 
 base_seleccion <- base_integrada %>%
@@ -56,14 +56,17 @@ base_seleccion <- base_integrada %>%
       "p207",
       "p208a",
       
-      # Variable resumida de olla común creada en el script 01
-      "registros_olla_comun",
+      # Variables correctas del módulo 613
+      "registros_modulo_613",
+      "existe_olla_zona_num",
+      "obtuvo_alimentos_olla_num",
+      "existencia_olla_zona",
       "acceso_olla_comun"
     ))
   )
 
 # ------------------------------------------------------------------------------
-# 4. Renombramiento de variables principales
+# 4. Renombrar variables principales
 # ------------------------------------------------------------------------------
 
 base_renombrada <- base_seleccion %>%
@@ -85,7 +88,7 @@ base_renombrada <- base_seleccion %>%
   )
 
 # ------------------------------------------------------------------------------
-# 5. Creación de variables iniciales de análisis
+# 5. Crear variables iniciales de análisis
 # ------------------------------------------------------------------------------
 
 base_acondicionada <- base_renombrada %>%
@@ -93,7 +96,7 @@ base_acondicionada <- base_renombrada %>%
     sexo_recodificado = case_when(
       sexo == 1 ~ "Hombre",
       sexo == 2 ~ "Mujer",
-      TRUE ~ NA_character_
+      TRUE ~ "Sin información"
     ),
     
     grupo_edad = case_when(
@@ -101,20 +104,26 @@ base_acondicionada <- base_renombrada %>%
       edad >= 18 & edad < 30 ~ "18 a 29",
       edad >= 30 & edad < 60 ~ "30 a 59",
       edad >= 60 ~ "60 a más",
-      TRUE ~ NA_character_
+      TRUE ~ "Sin información"
     ),
     
     area_residencia = case_when(
       as.numeric(estrato) <= 5 ~ "Urbana",
       as.numeric(estrato) >= 6 ~ "Rural",
-      TRUE ~ NA_character_
+      TRUE ~ "Sin información"
     ),
     
     acceso_olla_comun = replace_na(
       acceso_olla_comun,
-      "No registra información en módulo 613"
+      "Sin información"
+    ),
+    
+    existencia_olla_zona = replace_na(
+      existencia_olla_zona,
+      "Sin información"
     )
   )
+
 # ------------------------------------------------------------------------------
 # 6. Diagnóstico de valores perdidos
 # ------------------------------------------------------------------------------
