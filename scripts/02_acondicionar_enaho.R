@@ -5,10 +5,6 @@
 # Fecha: 21-06-2026
 # ==============================================================================
 
-# ------------------------------------------------------------------------------
-# 0. Cargar paquetes
-# ------------------------------------------------------------------------------
-
 library(tidyverse)
 library(arrow)
 library(janitor)
@@ -31,7 +27,7 @@ names(base_integrada)
 glimpse(base_integrada)
 
 # ------------------------------------------------------------------------------
-# 3. Seleccionar variables de interés
+# 3. Selección de variables de interés
 # ------------------------------------------------------------------------------
 
 base_seleccion <- base_integrada %>%
@@ -43,60 +39,53 @@ base_seleccion <- base_integrada %>%
       # Ubicación y características del hogar
       "ubigeo", "dominio", "estrato",
       
+      # Características de vivienda y servicios
+      "p101",
+      "p102",
+      "p103",
+      "p104",
+      "p110",
+      "p111a",
+      "p1121",
+      "p1144",
+      
       # Características personales
-      "p203",   # Relación de parentesco con jefe/a de hogar
-      "p204",   # Miembro del hogar
-      "p205",   # Residente habitual
-      "p207",   # Sexo
-      "p208a",  # Edad
+      "p203",
+      "p204",
+      "p205",
+      "p207",
+      "p208a",
       
-      # Variables vinculadas a olla común
-      "p612n",
-      "p613",
-      "p613a",
-      "p613b",
-      "p613c",
-      "p613d",
-      "p613e",
-      
-      # Variables de programas sociales
-      "p701",
-      "p702",
-      "p703",
-      "p704",
-      "p705"
+      # Variable resumida de olla común creada en el script 01
+      "registros_olla_comun",
+      "acceso_olla_comun"
     ))
   )
 
 # ------------------------------------------------------------------------------
-# 4. Renombrar variables principales
+# 4. Renombramiento de variables principales
 # ------------------------------------------------------------------------------
 
 base_renombrada <- base_seleccion %>%
   rename(
+    tipo_vivienda = any_of("p101"),
+    material_paredes = any_of("p102"),
+    material_piso = any_of("p103"),
+    habitaciones = any_of("p104"),
+    procedencia_agua = any_of("p110"),
+    servicio_higienico = any_of("p111a"),
+    electricidad = any_of("p1121"),
+    internet = any_of("p1144"),
+    
     parentesco = any_of("p203"),
     miembro_hogar = any_of("p204"),
     residente_habitual = any_of("p205"),
     sexo = any_of("p207"),
-    edad = any_of("p208a"),
-    
-    olla_comun_1 = any_of("p612n"),
-    olla_comun_2 = any_of("p613"),
-    olla_comun_3 = any_of("p613a"),
-    olla_comun_4 = any_of("p613b"),
-    olla_comun_5 = any_of("p613c"),
-    olla_comun_6 = any_of("p613d"),
-    olla_comun_7 = any_of("p613e"),
-    
-    programa_social_1 = any_of("p701"),
-    programa_social_2 = any_of("p702"),
-    programa_social_3 = any_of("p703"),
-    programa_social_4 = any_of("p704"),
-    programa_social_5 = any_of("p705")
+    edad = any_of("p208a")
   )
 
 # ------------------------------------------------------------------------------
-# 5. Crear variables iniciales de análisis
+# 5. Creación de variables iniciales de análisis
 # ------------------------------------------------------------------------------
 
 base_acondicionada <- base_renombrada %>%
@@ -115,19 +104,17 @@ base_acondicionada <- base_renombrada %>%
       TRUE ~ NA_character_
     ),
     
-    # Variable exploratoria.
-    # Se marca "Accede o registra vínculo con olla común" si alguna variable
-    # del módulo de olla común tiene información.
-    acceso_olla_comun = if_else(
-      if_any(
-        starts_with("olla_comun"),
-        ~ !is.na(.)
-      ),
-      "Sí registra información",
-      "No registra información"
+    area_residencia = case_when(
+      as.numeric(estrato) <= 5 ~ "Urbana",
+      as.numeric(estrato) >= 6 ~ "Rural",
+      TRUE ~ NA_character_
+    ),
+    
+    acceso_olla_comun = replace_na(
+      acceso_olla_comun,
+      "No registra información en módulo 613"
     )
   )
-
 # ------------------------------------------------------------------------------
 # 6. Diagnóstico de valores perdidos
 # ------------------------------------------------------------------------------
@@ -199,9 +186,3 @@ write_parquet(
   base_acondicionada,
   "datos/procesados/enaho_ollas_comunes_base_acondicionada.parquet"
 )
-
-# ------------------------------------------------------------------------------
-# 10. Mensaje final
-# ------------------------------------------------------------------------------
-
-message("Base acondicionada guardada en datos/procesados/enaho_ollas_comunes_base_acondicionada.parquet")
