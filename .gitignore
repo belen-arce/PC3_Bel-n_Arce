@@ -21,3 +21,6 @@ datos/procesados/*
 renv/library/
 renv/staging/
 .Rproj.user
+
+# Permitir tablas de resultados de la PC4
+!outputs/tablas/*.csv
