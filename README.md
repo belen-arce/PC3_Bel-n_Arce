@@ -64,3 +64,23 @@ El proyecto utiliza los siguientes paquetes de R:
 ## Control de versiones
 
 El proyecto utiliza Git para registrar cambios progresivos en la estructura, los scripts y la documentación. El repositorio será enlazado con GitHub para asegurar trazabilidad y acceso público.
+
+## PC4
+
+Para la PC4 se continuó el flujo de trabajo iniciado en la PC3, usando módulos de la ENAHO 2024 vinculados con características de vivienda y hogar, características de los miembros del hogar y el módulo de olla común.
+
+### Scripts actualizados
+
+- `scripts/01_integrar_modulos_enaho.R`: carga los módulos 100, 200 y 613 de la ENAHO 2024, los integra mediante llaves de hogar y guarda una base integrada en `datos/procesados`.
+- `scripts/02_acondicionar_enaho.R`: selecciona variables relevantes, renombra variables principales, crea variables iniciales de análisis y genera reportes de valores perdidos.
+
+### Scripts desarrollados
+
+- `scripts/03_explorar_enaho.R`: realiza exploración univariada y bivariada, y exporta tablas y gráficos en las carpetas `outputs/tablas` y `outputs/graficos`.
+- `scripts/04_clasificar_enaho.R`: construye variables analíticas de clasificación, incluyendo dummies, un índice simple de vulnerabilidad y una tipología entre registro de olla común y vulnerabilidad.
+
+### Decisiones metodológicas
+
+La base integrada combina información a nivel de persona y hogar. Para evitar duplicaciones en variables del hogar, el módulo de olla común fue resumido a nivel de hogar antes de realizar los cruces. En la exploración se trabajó con una base de personas y una base de hogares, según el tipo de variable analizada.
+
+La clasificación construida no busca medir pobreza de manera oficial, sino crear un índice simple y exploratorio de vulnerabilidad a partir de condiciones materiales del hogar y características personales disponibles en la base.
