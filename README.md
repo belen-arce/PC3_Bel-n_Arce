@@ -12,9 +12,7 @@ El repositorio fue creado como parte de la PC3 del Taller de Procesamiento de Da
 
 ## Fuente de datos
 
-Encuesta Nacional de Hogares (ENAHO), producida por el Instituto Nacional de Estadística e Informática (INEI).
-
-Para el análisis se consideran módulos vinculados con características del hogar, características de las personas, condiciones de vida, programas sociales y acceso a formas de apoyo alimentario.
+La fuente principal del proyecto es la Encuesta Nacional de Hogares (ENAHO), producida por el Instituto Nacional de Estadística e Informática (INEI).
 
 ## Estructura del repositorio
 
@@ -63,3 +61,6 @@ El proyecto utiliza los siguientes paquetes de R:
 * `usethis`
 * `gitcreds`
 
+## Control de versiones
+
+El proyecto utiliza Git para registrar cambios progresivos en la estructura, los scripts y la documentación. El repositorio será enlazado con GitHub para asegurar trazabilidad y acceso público.
