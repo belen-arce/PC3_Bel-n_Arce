@@ -29,7 +29,7 @@ library(janitor)
 library(naniar)
 
 # ------------------------------------------------------------------------------
-# 1. Cargar base integrada
+# 1. Carga de base integrada
 # ------------------------------------------------------------------------------
 
 base_integrada <- read_parquet(
@@ -45,7 +45,7 @@ names(base_integrada)
 glimpse(base_integrada)
 
 # ------------------------------------------------------------------------------
-# 3. Seleccionar variables de interés
+# 3. Selección de variables de interés
 # ------------------------------------------------------------------------------
 
 base_seleccion <- base_integrada %>%
@@ -84,7 +84,7 @@ base_seleccion <- base_integrada %>%
   )
 
 # ------------------------------------------------------------------------------
-# 4. Renombrar variables principales
+# 4. Renombramiento de variables principales
 # ------------------------------------------------------------------------------
 
 base_renombrada <- base_seleccion %>%
@@ -106,7 +106,7 @@ base_renombrada <- base_seleccion %>%
   )
 
 # ------------------------------------------------------------------------------
-# 5. Crear variables iniciales de análisis
+# 5. Creación de variables iniciales de análisis
 # ------------------------------------------------------------------------------
 
 # Las recodificaciones crean etiquetas legibles para las etapas posteriores.
