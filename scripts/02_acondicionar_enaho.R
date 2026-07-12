@@ -139,7 +139,7 @@ reporte_nas <- base_acondicionada %>%
 
 write_csv(
   reporte_nas,
-  "outputs/tablas/reporte_nas_ollas_comunes.csv"
+  "outputs/acondicionar/reporte_nas_ollas_comunes.csv"
 )
 
 # ------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ grafico_nas <- gg_miss_var(base_acondicionada, show_pct = TRUE) +
   theme_minimal()
 
 ggsave(
-  filename = "outputs/graficos/grafico_nas_ollas_comunes.png",
+  filename = "outputs/acondicionar/grafico_nas_ollas_comunes.png",
   plot = grafico_nas,
   width = 8,
   height = 6,

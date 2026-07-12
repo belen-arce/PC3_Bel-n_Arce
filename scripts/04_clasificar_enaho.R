@@ -130,7 +130,7 @@ reporte_nivel_vulnerabilidad <- base_hogares_clasificada %>%
 
 write_csv(
   reporte_nivel_vulnerabilidad,
-  "outputs/tablas/reporte_clasificacion_nivel_vulnerabilidad.csv"
+  "outputs/clasificar/reporte_clasificacion_nivel_vulnerabilidad.csv"
 )
 
 reporte_tipologia <- base_hogares_clasificada %>%
@@ -144,7 +144,7 @@ reporte_tipologia <- base_hogares_clasificada %>%
 
 write_csv(
   reporte_tipologia,
-  "outputs/tablas/reporte_clasificacion_tipologia_olla_vulnerabilidad.csv"
+  "outputs/clasificar/reporte_clasificacion_tipologia_olla_vulnerabilidad.csv"
 )
 
 reporte_dummies <- base_hogares_clasificada %>%
@@ -162,7 +162,7 @@ reporte_dummies <- base_hogares_clasificada %>%
 
 write_csv(
   reporte_dummies,
-  "outputs/tablas/reporte_clasificacion_dummies.csv"
+  "outputs/clasificar/reporte_clasificacion_dummies.csv"
 )
 
 # ------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ grafico_tipologia <- ggplot(
   theme(plot.title = element_text(face = "bold"))
 
 ggsave(
-  "outputs/graficos/grafico_clasificacion_tipologia_olla_vulnerabilidad.png",
+  "outputs/clasificar/grafico_clasificacion_tipologia_olla_vulnerabilidad.png",
   grafico_tipologia,
   width = 10,
   height = 6,

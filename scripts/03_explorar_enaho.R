@@ -47,7 +47,7 @@ tabla_acceso_olla <- base_hogares_olla_valida %>%
 
 write_csv(
   tabla_acceso_olla,
-  "outputs/tablas/eda_univariado_acceso_olla.csv"
+  "outputs/explorar/eda_univariado_acceso_olla.csv"
 )
 
 tabla_area <- base_hogares %>%
@@ -57,7 +57,7 @@ tabla_area <- base_hogares %>%
 
 write_csv(
   tabla_area,
-  "outputs/tablas/eda_univariado_area_residencia.csv"
+  "outputs/explorar/eda_univariado_area_residencia.csv"
 )
 
 tabla_sexo <- base_personas %>%
@@ -67,7 +67,7 @@ tabla_sexo <- base_personas %>%
 
 write_csv(
   tabla_sexo,
-  "outputs/tablas/eda_univariado_sexo.csv"
+  "outputs/explorar/eda_univariado_sexo.csv"
 )
 
 tabla_grupo_edad <- base_personas %>%
@@ -77,7 +77,7 @@ tabla_grupo_edad <- base_personas %>%
 
 write_csv(
   tabla_grupo_edad,
-  "outputs/tablas/eda_univariado_grupo_edad.csv"
+  "outputs/explorar/eda_univariado_grupo_edad.csv"
 )
 
 # ------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ tabla_olla_area <- base_hogares_olla_valida %>%
 
 write_csv(
   tabla_olla_area,
-  "outputs/tablas/eda_bivariado_olla_por_area.csv"
+  "outputs/explorar/eda_bivariado_olla_por_area.csv"
 )
 
 tabla_olla_sexo <- base_personas_olla_valida %>%
@@ -105,7 +105,7 @@ tabla_olla_sexo <- base_personas_olla_valida %>%
 
 write_csv(
   tabla_olla_sexo,
-  "outputs/tablas/eda_bivariado_olla_por_sexo.csv"
+  "outputs/explorar/eda_bivariado_olla_por_sexo.csv"
 )
 
 tabla_olla_edad <- base_personas_olla_valida %>%
@@ -117,7 +117,7 @@ tabla_olla_edad <- base_personas_olla_valida %>%
 
 write_csv(
   tabla_olla_edad,
-  "outputs/tablas/eda_bivariado_olla_por_grupo_edad.csv"
+  "outputs/explorar/eda_bivariado_olla_por_grupo_edad.csv"
 )
 
 # ------------------------------------------------------------------------------
@@ -142,7 +142,7 @@ grafico_acceso_olla <- ggplot(
   theme(plot.title = element_text(face = "bold"))
 
 ggsave(
-  "outputs/graficos/grafico_eda_acceso_olla.png",
+  "outputs/explorar/grafico_eda_acceso_olla.png",
   grafico_acceso_olla,
   width = 9,
   height = 6,
@@ -165,7 +165,7 @@ grafico_area <- ggplot(
   theme(plot.title = element_text(face = "bold"))
 
 ggsave(
-  "outputs/graficos/grafico_eda_area_residencia.png",
+  "outputs/explorar/grafico_eda_area_residencia.png",
   grafico_area,
   width = 8,
   height = 6,
@@ -202,7 +202,7 @@ grafico_olla_area <- ggplot(
   )
 
 ggsave(
-  "outputs/graficos/grafico_eda_olla_por_area.png",
+  "outputs/explorar/grafico_eda_olla_por_area.png",
   grafico_olla_area,
   width = 9,
   height = 6,
@@ -235,7 +235,7 @@ grafico_olla_edad <- ggplot(
   )
 
 ggsave(
-  "outputs/graficos/grafico_eda_olla_por_grupo_edad.png",
+  "outputs/explorar/grafico_eda_olla_por_grupo_edad.png",
   grafico_olla_edad,
   width = 9,
   height = 6,
