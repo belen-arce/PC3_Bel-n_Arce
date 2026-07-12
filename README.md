@@ -1,8 +1,8 @@
 # Procesamiento de datos sobre ollas comunes y condiciones de vida con ENAHO 2024
 
-## Autora
+## Autorxs
 
-Belén Arce
+Belén Arce y Damián Tapia
 
 ## Encuesta
 
