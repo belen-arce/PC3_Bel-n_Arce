@@ -6,29 +6,34 @@
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# 1. Crear estructura de carpetas
+# 1. Creación de estructura de carpetas
 # ------------------------------------------------------------------------------
 
-dir.create("datos", showWarnings = FALSE)
-dir.create("datos/crudos", showWarnings = FALSE)
-dir.create("datos/procesados", showWarnings = FALSE)
+# Crear la estructura de carpetas del proyecto
+carpetas_proyecto <- c(
+  "datos/crudos",
+  "datos/procesados",
+  "outputs/acondicionar",
+  "outputs/explorar",
+  "outputs/clasificar",
+  "outputs/documentar",
+  "docs",
+  "scripts"
+)
 
-dir.create("outputs", showWarnings = FALSE)
-dir.create("outputs/graficos", showWarnings = FALSE)
-dir.create("outputs/tablas", showWarnings = FALSE)
-
-dir.create("docs", showWarnings = FALSE)
-dir.create("scripts", showWarnings = FALSE)
+purrr::walk(
+  carpetas_proyecto,
+  ~ dir.create(.x, recursive = TRUE, showWarnings = FALSE)
+)
 
 # Archivos .gitkeep para que GitHub muestre carpetas vacías
-file.create("datos/crudos/.gitkeep")
-file.create("datos/procesados/.gitkeep")
-file.create("outputs/graficos/.gitkeep")
-file.create("outputs/tablas/.gitkeep")
-file.create("docs/.gitkeep")
+file.create("outputs/acondicionar/.gitkeep")
+file.create("outputs/explorar/.gitkeep")
+file.create("outputs/clasificar/.gitkeep")
+file.create("outputs/documentar/.gitkeep")
 
 # ------------------------------------------------------------------------------
-# 2. Actualizar .gitignore
+# 2. Actualización del .gitignore
 # ------------------------------------------------------------------------------
 
 gitignore_text <- c(
@@ -46,10 +51,18 @@ gitignore_text <- c(
   "*.parquet",
   "*.rds",
   "",
-  "# Archivos temporales de R",
+  "# Conservar los reportes CSV del trabajo final",
+  "!outputs/acondicionar/*.csv",
+  "!outputs/explorar/*.csv",
+  "!outputs/clasificar/*.csv",
+  "!outputs/documentar/*.csv",
+  "",
+  "# Archivos temporales de R y RStudio",
   ".Rhistory",
   ".RData",
+  ".RDataTmp",
   ".Ruserdata",
+  ".Rproj.user/",
   "",
   "# renv",
   "renv/library/",
@@ -59,7 +72,7 @@ gitignore_text <- c(
 writeLines(gitignore_text, ".gitignore")
 
 # ------------------------------------------------------------------------------
-# 3. Instalar paquetes necesarios para el proyecto
+# 3. Instalación de paquetes necesarios para el proyecto
 # ------------------------------------------------------------------------------
 
 paquetes <- c(
@@ -81,12 +94,19 @@ if (length(paquetes_faltantes) > 0) {
 }
 
 # ------------------------------------------------------------------------------
-# 4. Activar renv para reproducibilidad
+# 4. Activación renv para reproducibilidad
 # ------------------------------------------------------------------------------
 
-renv::consent(provided = TRUE)
-renv::init(bare = TRUE)
-renv::snapshot(prompt = FALSE)
+
+if (file.exists("renv.lock")) {
+  message(
+    "renv.lock encontrado. Para restaurar las dependencias, ejecute renv::restore()."
+  )
+} else {
+  message(
+    "No se encontró renv.lock. Inicialice renv una sola vez con renv::init()."
+  )
+}
 
 # ------------------------------------------------------------------------------
 # 5. Enlace con Git y GitHub

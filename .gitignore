@@ -12,24 +12,19 @@ datos/procesados/*
 *.parquet
 *.rds
 
-# Archivos temporales de R
-.Rhistory
-.RData
-.Ruserdata
-
-# renv
-renv/library/
-renv/staging/
-.Rproj.user
-
-# Permitir tablas de resultados de la PC4
-!outputs/tablas/*.csv
-
-# Permitir outputs del trabajo final
+# Conservar los reportes CSV del trabajo final
 !outputs/acondicionar/*.csv
 !outputs/explorar/*.csv
 !outputs/clasificar/*.csv
 !outputs/documentar/*.csv
 
-# Ignorar archivos temporales de R
+# Archivos temporales de R y RStudio
+.Rhistory
+.RData
 .RDataTmp
+.Ruserdata
+.Rproj.user/
+
+# renv
+renv/library/
+renv/staging/
