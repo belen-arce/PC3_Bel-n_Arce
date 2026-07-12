@@ -1,16 +1,32 @@
 # ==============================================================================
-# Proyecto: Ollas comunes, vulnerabilidad alimentaria y condiciones de vida
+# Proyecto: Ollas comunes y condiciones de vida con ENAHO 2024
 # Script: 05_documentar_enaho.R
 # Autora: Belén Arce
-# Objetivo: Generar el codebook de la base final procesada y registrar
-#           la información del entorno de trabajo
+#
+# Objetivo:
+# Generar el codebook de la base final clasificada y registrar la información
+# técnica del entorno utilizado para procesar los datos.
+#
+# Unidad de análisis:
+# La base conserva una fila por persona. Las variables del hogar se repiten
+# entre sus integrantes porque provienen de los módulos 100 y 613.
+#
+# Tratamiento de casos sin información:
+# Para el diagnóstico del codebook se consideran perdidos tanto los valores NA
+# como la categoría "Sin información".
+#
+# Productos:
+# - Codebook de la base final en formato CSV.
+# - Registro del entorno de R en formato TXT.
+#
+# Fecha de creación: 12-07-2026
 # ==============================================================================
 
 library(tidyverse)
 library(arrow)
 
 # ------------------------------------------------------------------------------
-# 1. Cargar la base final clasificada
+# 1. Carga de la base final clasificada
 # ------------------------------------------------------------------------------
 
 base_final <- read_parquet(
@@ -21,24 +37,43 @@ base_final <- read_parquet(
 # 2. Creación del diagnóstico automático de cada variable
 # ------------------------------------------------------------------------------
 
-codebook_automatico <- map_dfr(names(base_final), function(nombre_variable) {
-  
-  x <- base_final[[nombre_variable]]
-  
-  valores_ejemplo <- unique(na.omit(as.character(x)))
-  valores_ejemplo <- head(valores_ejemplo, 5)
-  
-  tibble(
-    variable = nombre_variable,
-    tipo_en_r = paste(class(x), collapse = " / "),
-    total_casos = length(x),
-    casos_validos = sum(!is.na(x)),
-    casos_perdidos = sum(is.na(x)),
-    porcentaje_perdidos = round(mean(is.na(x)) * 100, 2),
-    valores_unicos = n_distinct(x, na.rm = TRUE),
-    ejemplos = paste(valores_ejemplo, collapse = " | ")
-  )
-})
+codebook_automatico <- map_dfr(
+  names(base_final),
+  function(nombre_variable) {
+    
+    x <- base_final[[nombre_variable]]
+    
+    # Se consideran perdidos tanto los NA como la categoría
+    # "Sin información" creada durante el procesamiento.
+    es_perdido <- is.na(x) |
+      as.character(x) == "Sin información"
+    
+    valores_ejemplo <- x[!es_perdido] %>%
+      as.character() %>%
+      unique() %>%
+      head(5)
+    
+    tibble(
+      variable = nombre_variable,
+      tipo_en_r = paste(class(x), collapse = " / "),
+      total_casos = length(x),
+      casos_validos = sum(!es_perdido),
+      casos_perdidos = sum(es_perdido),
+      porcentaje_perdidos = round(
+        mean(es_perdido) * 100,
+        1
+      ),
+      valores_unicos = n_distinct(
+        x[!es_perdido],
+        na.rm = TRUE
+      ),
+      ejemplos = paste(
+        valores_ejemplo,
+        collapse = " | "
+      )
+    )
+  }
+)
 
 # ------------------------------------------------------------------------------
 # 3. Descripción del origen y significado de las variables
@@ -95,15 +130,30 @@ metadatos_variables <- tribble(
   "tipologia_olla_vulnerabilidad", "Variable derivada", "Hogar", "Tipología que combina acceso a olla común y nivel de vulnerabilidad.", "Cruce entre acceso/no acceso y vulnerabilidad alta o baja/media."
 )
 
+# Comprobar que cada variable de la base final tenga una sola descripción.
+stopifnot(
+  !anyDuplicated(metadatos_variables$variable),
+  all(names(base_final) %in% metadatos_variables$variable)
+)
+
 # ------------------------------------------------------------------------------
 # 4. Integración del diagnóstico y descripciones
 # ------------------------------------------------------------------------------
 
 codebook_final <- codebook_automatico %>%
-  left_join(metadatos_variables, by = "variable") %>%
+  left_join(
+    metadatos_variables,
+    by = "variable"
+  ) %>%
   mutate(
-    origen = replace_na(origen, "Variable conservada de la base procesada"),
-    unidad_analisis = replace_na(unidad_analisis, "Consultar según variable"),
+    origen = replace_na(
+      origen,
+      "Variable conservada de la base procesada"
+    ),
+    unidad_analisis = replace_na(
+      unidad_analisis,
+      "Consultar según variable"
+    ),
     descripcion = replace_na(
       descripcion,
       "Variable conservada de la ENAHO 2024. Consultar el diccionario original."
@@ -126,6 +176,20 @@ codebook_final <- codebook_automatico %>%
     porcentaje_perdidos,
     valores_unicos,
     ejemplos
+  ) %>%
+  rename(
+    Variable = variable,
+    Origen = origen,
+    `Unidad de análisis` = unidad_analisis,
+    Descripción = descripcion,
+    `Codificación o derivación` = codificacion_derivacion,
+    `Tipo en R` = tipo_en_r,
+    `Total de casos` = total_casos,
+    `Casos válidos` = casos_validos,
+    `Casos perdidos` = casos_perdidos,
+    `Datos perdidos (%)` = porcentaje_perdidos,
+    `Valores únicos` = valores_unicos,
+    Ejemplos = ejemplos
   )
 
 # ------------------------------------------------------------------------------

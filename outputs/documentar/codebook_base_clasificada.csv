@@ -1,4 +1,4 @@
-variable,origen,unidad_analisis,descripcion,codificacion_derivacion,tipo_en_r,total_casos,casos_validos,casos_perdidos,porcentaje_perdidos,valores_unicos,ejemplos
+Variable,Origen,Unidad de análisis,Descripción,Codificación o derivación,Tipo en R,Total de casos,Casos válidos,Casos perdidos,Datos perdidos (%),Valores únicos,Ejemplos
 conglome,Llave ENAHO,Hogar,Código del conglomerado muestral.,Codificación original de ENAHO 2024.,character,117721,117721,0,0,5359,010651 | 011380 | 015001 | 015003 | 015004
 vivienda,Llave ENAHO,Vivienda,Código de identificación de la vivienda.,Codificación original de ENAHO 2024.,character,117721,117721,0,0,541,013 | 026 | 055 | 069 | 084
 hogar,Llave ENAHO,Hogar,Código del hogar dentro de la vivienda.,Codificación original de ENAHO 2024.,numeric,117721,117721,0,0,15,11 | 12 | 22 | 13 | 23
@@ -6,33 +6,33 @@ codperso,Módulo 200,Persona,Código de la persona dentro del hogar.,Codificaci�
 ubigeo,Módulo 100,Hogar,Código de ubicación geográfica del hogar.,Codificación UBIGEO del INEI.,character,117721,117721,0,0,1271,150509 | 221003 | 010101 | 010509 | 010110
 dominio,Módulo 100,Hogar,Dominio geográfico de la encuesta.,Codificación original de ENAHO 2024.,numeric,117721,117721,0,0,8,2 | 7 | 4 | 5 | 6
 estrato,Módulo 100,Hogar,Estrato geográfico y poblacional del hogar.,Valores del 1 al 8 según el diseño muestral.,numeric,117721,117721,0,0,8,4 | 7 | 5 | 6 | 8
-tipo_vivienda,Módulo 100,Hogar,Tipo de vivienda ocupada por el hogar.,Variable original P101.,numeric,117721,116589,1132,0.96,7,3 | 1 | 4 | 5 | 2
-material_paredes,Módulo 100,Hogar,Material predominante de las paredes exteriores.,Variable original P102.,numeric,117721,116589,1132,0.96,9,1 | 3 | 7 | 5 | 4
-material_piso,Módulo 100,Hogar,Material predominante del piso de la vivienda.,Variable original P103.,numeric,117721,116589,1132,0.96,7,5 | 3 | 6 | 2 | 4
-habitaciones,Módulo 100,Hogar,Número de habitaciones de la vivienda.,Variable original P104.,numeric,117721,116589,1132,0.96,15,5 | 4 | 3 | 2 | 8
+tipo_vivienda,Módulo 100,Hogar,Tipo de vivienda ocupada por el hogar.,Variable original P101.,numeric,117721,116589,1132,1,7,3 | 1 | 4 | 5 | 2
+material_paredes,Módulo 100,Hogar,Material predominante de las paredes exteriores.,Variable original P102.,numeric,117721,116589,1132,1,9,1 | 3 | 7 | 5 | 4
+material_piso,Módulo 100,Hogar,Material predominante del piso de la vivienda.,Variable original P103.,numeric,117721,116589,1132,1,7,5 | 3 | 6 | 2 | 4
+habitaciones,Módulo 100,Hogar,Número de habitaciones de la vivienda.,Variable original P104.,numeric,117721,116589,1132,1,15,5 | 4 | 3 | 2 | 8
 procedencia_agua,Módulo 100,Hogar,Fuente principal del agua utilizada por el hogar.,Variable original P110.,numeric,117721,117721,0,0,8,1 | 2 | 5 | 7 | 4
 servicio_higienico,Módulo 100,Hogar,Tipo de conexión del servicio higiénico.,Variable original P111A.,numeric,117721,117721,0,0,8,1 | 7 | 3 | 5 | 4
 electricidad,Módulo 100,Hogar,Disponibilidad de electricidad como alumbrado.,Variable original P1121.,numeric,117721,117721,0,0,2,1 | 0
 internet,Módulo 100,Hogar,Disponibilidad de conexión fija o móvil a internet.,Variable original P1144.,numeric,117721,117721,0,0,2,1 | 0
 parentesco,Módulo 200,Persona,Relación de parentesco con la jefatura del hogar.,Variable original P203.,numeric,117721,117721,0,0,12,1 | 2 | 5 | 3 | 6
-miembro_hogar,Módulo 200,Persona,Indica si la persona es miembro del hogar.,Variable original P204.,numeric,117721,113755,3966,3.37,2,1 | 2
-residente_habitual,Módulo 200,Persona,Indica si la persona es residente habitual.,Variable original P205.,numeric,117721,109842,7879,6.69,2,2 | 1
-sexo,Módulo 200,Persona,Sexo registrado para la persona encuestada.,Variable original P207.,numeric,117721,113755,3966,3.37,2,1 | 2
-edad,Módulo 200,Persona,Edad de la persona en años cumplidos.,Variable original P208A.,numeric,117721,113755,3966,3.37,99,74 | 70 | 22 | 19 | 48
+miembro_hogar,Módulo 200,Persona,Indica si la persona es miembro del hogar.,Variable original P204.,numeric,117721,113755,3966,3.4,2,1 | 2
+residente_habitual,Módulo 200,Persona,Indica si la persona es residente habitual.,Variable original P205.,numeric,117721,109842,7879,6.7,2,2 | 1
+sexo,Módulo 200,Persona,Sexo registrado para la persona encuestada.,Variable original P207.,numeric,117721,113755,3966,3.4,2,1 | 2
+edad,Módulo 200,Persona,Edad de la persona en años cumplidos.,Variable original P208A.,numeric,117721,113755,3966,3.4,99,74 | 70 | 22 | 19 | 48
 registros_modulo_613,Módulo 613,Hogar,Cantidad de registros encontrados para el hogar en el módulo de olla común.,"Conteo de filas por conglomerado, vivienda y hogar.",integer,117721,117721,0,0,1,1
-existe_olla_zona_num,Módulo 613,Hogar,Indicador numérico de existencia de una olla común en la zona.,1 = sí; 0 = no; NA = sin información. Derivada de P613A.,numeric,117721,116004,1717,1.46,2,0 | 1
-obtuvo_alimentos_olla_num,Módulo 613,Hogar,Indicador numérico de acceso del hogar a alimentos de olla común.,1 = sí; 0 = no; NA = sin información. Derivada de P613B.,numeric,117721,116004,1717,1.46,2,0 | 1
-existencia_olla_zona,Variable derivada,Hogar,Versión categórica de la existencia de una olla común en la zona.,"Sí existió, no existió o sin información.",character,117721,117721,0,0,3,No existió olla común en la zona | Sí existió olla común en la zona | Sin información
-acceso_olla_comun,Variable derivada,Hogar,"Indica si el hogar obtuvo, compró o recibió alimentos de una olla común.","Sí obtuvo, no obtuvo o sin información.",character,117721,117721,0,0,3,No obtuvo alimentos de olla común | Sin información | Sí obtuvo alimentos de olla común
-sexo_recodificado,Variable derivada,Persona,Versión categórica y legible de la variable sexo.,1 = Hombre; 2 = Mujer; otros = Sin información.,character,117721,117721,0,0,3,Hombre | Mujer | Sin información
-grupo_edad,Variable derivada,Persona,Clasificación de las personas en grupos de edad.,Menor de 18; 18 a 29; 30 a 59; 60 a más.,character,117721,117721,0,0,5,60 a más | 18 a 29 | 30 a 59 | Menor de 18 | Sin información
+existe_olla_zona_num,Módulo 613,Hogar,Indicador numérico de existencia de una olla común en la zona.,1 = sí; 0 = no; NA = sin información. Derivada de P613A.,numeric,117721,116004,1717,1.5,2,0 | 1
+obtuvo_alimentos_olla_num,Módulo 613,Hogar,Indicador numérico de acceso del hogar a alimentos de olla común.,1 = sí; 0 = no; NA = sin información. Derivada de P613B.,numeric,117721,116004,1717,1.5,2,0 | 1
+existencia_olla_zona,Variable derivada,Hogar,Versión categórica de la existencia de una olla común en la zona.,"Sí existió, no existió o sin información.",character,117721,116004,1717,1.5,2,No existió olla común en la zona | Sí existió olla común en la zona
+acceso_olla_comun,Variable derivada,Hogar,"Indica si el hogar obtuvo, compró o recibió alimentos de una olla común.","Sí obtuvo, no obtuvo o sin información.",character,117721,116004,1717,1.5,2,No obtuvo alimentos de olla común | Sí obtuvo alimentos de olla común
+sexo_recodificado,Variable derivada,Persona,Versión categórica y legible de la variable sexo.,1 = Hombre; 2 = Mujer; otros = Sin información.,character,117721,113755,3966,3.4,2,Hombre | Mujer
+grupo_edad,Variable derivada,Persona,Clasificación de las personas en grupos de edad.,Menor de 18; 18 a 29; 30 a 59; 60 a más.,character,117721,113755,3966,3.4,4,60 a más | 18 a 29 | 30 a 59 | Menor de 18
 area_residencia,Variable derivada,Hogar,Clasificación operativa del área de residencia.,Estratos 1 a 5 = urbana; estratos 6 a 8 = rural.,character,117721,117721,0,0,2,Urbana | Rural
-piso_tierra,Variable derivada,Hogar,Indicador de precariedad asociado a piso de tierra.,1 si P103 = 6; 0 para otros materiales válidos.,numeric,117721,116589,1132,0.96,2,0 | 1
+piso_tierra,Variable derivada,Hogar,Indicador de precariedad asociado a piso de tierra.,1 si P103 = 6; 0 para otros materiales válidos.,numeric,117721,116589,1132,1,2,0 | 1
 agua_no_red_publica,Variable derivada,Hogar,Indicador de acceso a agua fuera de una red pública domiciliaria.,0 si P110 es 1 o 2; 1 para otras fuentes válidas.,numeric,117721,117721,0,0,2,0 | 1
 saneamiento_no_red_publica,Variable derivada,Hogar,Indicador de servicio higiénico no conectado a red pública.,0 si P111A es 1 o 2; 1 para otras alternativas válidas.,numeric,117721,117721,0,0,2,0 | 1
 sin_internet,Variable derivada,Hogar,Indicador de ausencia de conexión a internet.,0 si P1144 = 1; 1 si P1144 = 0.,numeric,117721,117721,0,0,2,0 | 1
 n_indicadores_validos,Variable derivada,Hogar,Número de indicadores disponibles para calcular el índice.,Conteo de indicadores no perdidos entre cuatro condiciones materiales.,numeric,117721,117721,0,0,2,4 | 3
 indice_vulnerabilidad_simple,Variable derivada,Hogar,Suma simple de privaciones materiales del hogar.,"Suma de piso de tierra, agua no pública, saneamiento no público y ausencia de internet. Se calcula con al menos tres indicadores válidos.",numeric,117721,117721,0,0,5,0 | 1 | 2 | 3 | 4
 nivel_vulnerabilidad,Variable derivada,Hogar,Clasificación del índice simple de vulnerabilidad.,Baja = 0 o 1; media = 2; alta = 3 o 4.,character,117721,117721,0,0,3,Baja | Media | Alta
-acceso_olla_clasificado,Variable derivada,Hogar,Recodificación resumida del acceso a olla común.,"Accedió, no accedió o sin información.",character,117721,117721,0,0,3,No accedió a olla común | Sin información | Accedió a olla común
-tipologia_olla_vulnerabilidad,Variable derivada,Hogar,Tipología que combina acceso a olla común y nivel de vulnerabilidad.,Cruce entre acceso/no acceso y vulnerabilidad alta o baja/media.,character,117721,117721,0,0,5,No accedió a olla común y vulnerabilidad baja/media | No accedió a olla común y vulnerabilidad alta | Sin información | Accedió a olla común y vulnerabilidad baja/media | Accedió a olla común y vulnerabilidad alta
+acceso_olla_clasificado,Variable derivada,Hogar,Recodificación resumida del acceso a olla común.,"Accedió, no accedió o sin información.",character,117721,116004,1717,1.5,2,No accedió a olla común | Accedió a olla común
+tipologia_olla_vulnerabilidad,Variable derivada,Hogar,Tipología que combina acceso a olla común y nivel de vulnerabilidad.,Cruce entre acceso/no acceso y vulnerabilidad alta o baja/media.,character,117721,116004,1717,1.5,4,No accedió a olla común y vulnerabilidad baja/media | No accedió a olla común y vulnerabilidad alta | Accedió a olla común y vulnerabilidad baja/media | Accedió a olla común y vulnerabilidad alta
