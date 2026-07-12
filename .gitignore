@@ -24,3 +24,12 @@ renv/staging/
 
 # Permitir tablas de resultados de la PC4
 !outputs/tablas/*.csv
+
+# Permitir outputs del trabajo final
+!outputs/acondicionar/*.csv
+!outputs/explorar/*.csv
+!outputs/clasificar/*.csv
+!outputs/documentar/*.csv
+
+# Ignorar archivos temporales de R
+.RDataTmp
