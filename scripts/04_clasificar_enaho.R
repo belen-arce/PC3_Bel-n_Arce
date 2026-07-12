@@ -166,25 +166,150 @@ write_csv(
 )
 
 # ------------------------------------------------------------------------------
-# 7. Gráfico de clasificación
+# 7. Reporte de variables creadas
 # ------------------------------------------------------------------------------
 
+descripcion_variables_creadas <- tribble(
+  ~variable, ~unidad_analisis, ~que_mide, ~codificacion,
+  
+  "piso_tierra",
+  "Hogar",
+  "Presencia de piso de tierra.",
+  "1 = Sí; 0 = No",
+  
+  "agua_no_red_publica",
+  "Hogar",
+  "Agua fuera de una red pública.",
+  "1 = Sí; 0 = No",
+  
+  "saneamiento_no_red_publica",
+  "Hogar",
+  "Saneamiento fuera de una red pública.",
+  "1 = Sí; 0 = No",
+  
+  "sin_internet",
+  "Hogar",
+  "Ausencia de conexión a internet.",
+  "1 = Sí; 0 = No",
+  
+  "n_indicadores_validos",
+  "Hogar",
+  "Cantidad de indicadores disponibles.",
+  "Valores de 0 a 4",
+  
+  "indice_vulnerabilidad_simple",
+  "Hogar",
+  "Número de privaciones materiales.",
+  "Valores de 0 a 4",
+  
+  "nivel_vulnerabilidad",
+  "Hogar",
+  "Nivel de vulnerabilidad material.",
+  "Baja; Media; Alta",
+  
+  "acceso_olla_clasificado",
+  "Hogar",
+  "Acceso a alimentos de olla común.",
+  "Accedió; No accedió",
+  
+  "tipologia_olla_vulnerabilidad",
+  "Hogar",
+  "Combinación entre acceso y vulnerabilidad.",
+  "Cuatro categorías"
+)
+
+resumen_variables_creadas <- map_dfr(
+  descripcion_variables_creadas$variable,
+  function(nombre_variable) {
+    
+    x <- base_hogares_clasificada[[nombre_variable]]
+    
+    tibble(
+      variable = nombre_variable,
+      casos_validos = sum(!is.na(x)),
+      porcentaje_perdidos = round(mean(is.na(x)) * 100, 1)
+    )
+  }
+)
+
+reporte_detallado_variables <- descripcion_variables_creadas %>%
+  left_join(resumen_variables_creadas, by = "variable") %>%
+  rename(
+    Variable = variable,
+    `Unidad de análisis` = unidad_analisis,
+    `Qué mide` = que_mide,
+    Codificación = codificacion,
+    `Casos válidos` = casos_validos,
+    `Datos perdidos (%)` = porcentaje_perdidos
+  )
+
+write_csv(
+  reporte_detallado_variables,
+  "outputs/clasificar/reporte_detallado_variables_creadas.csv"
+)
+
+# ------------------------------------------------------------------------------
+# 8. Gráfico de clasificación
+# ------------------------------------------------------------------------------
+
+reporte_tipologia_graf <- reporte_tipologia %>%
+  mutate(
+    tipologia_grafico = case_when(
+      tipologia_olla_vulnerabilidad ==
+        "No accedió a olla común y vulnerabilidad baja/media" ~
+        "No accedió\nVulnerabilidad baja/media",
+      
+      tipologia_olla_vulnerabilidad ==
+        "No accedió a olla común y vulnerabilidad alta" ~
+        "No accedió\nVulnerabilidad alta",
+      
+      tipologia_olla_vulnerabilidad ==
+        "Accedió a olla común y vulnerabilidad baja/media" ~
+        "Accedió\nVulnerabilidad baja/media",
+      
+      tipologia_olla_vulnerabilidad ==
+        "Accedió a olla común y vulnerabilidad alta" ~
+        "Accedió\nVulnerabilidad alta",
+      
+      TRUE ~ tipologia_olla_vulnerabilidad
+    ),
+    
+    etiqueta_porcentaje = case_when(
+      porcentaje < 0.1 ~ "<0.1%",
+      TRUE ~ paste0(round(porcentaje, 1), "%")
+    )
+  )
+
 grafico_tipologia <- ggplot(
-  reporte_tipologia,
-  aes(x = reorder(tipologia_olla_vulnerabilidad, porcentaje), y = porcentaje)
+  reporte_tipologia_graf,
+  aes(
+    x = reorder(tipologia_grafico, porcentaje),
+    y = porcentaje
+  )
 ) +
   geom_col() +
-  geom_text(aes(label = paste0(porcentaje, "%")), hjust = -0.1, size = 3.6) +
+  geom_text(
+    aes(label = etiqueta_porcentaje),
+    hjust = -0.1,
+    size = 3.6
+  ) +
   coord_flip() +
   labs(
-    title = "Tipología entre acceso a olla común y vulnerabilidad",
-    subtitle = "Porcentaje calculado sobre hogares con información válida",
+    title = "Acceso a olla común y nivel de vulnerabilidad",
+    subtitle = NULL,
+    caption = "Fuente: INEI, ENAHO 2024",
     x = NULL,
     y = "Porcentaje de hogares"
   ) +
-  ylim(0, max(reporte_tipologia$porcentaje) + 10) +
+  scale_y_continuous(
+    limits = c(0, max(reporte_tipologia$porcentaje) + 8),
+    expand = expansion(mult = c(0, 0.02))
+  ) +
   theme_minimal() +
-  theme(plot.title = element_text(face = "bold"))
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.text.y = element_text(size = 10)
+  )
 
 ggsave(
   "outputs/clasificar/grafico_clasificacion_tipologia_olla_vulnerabilidad.png",
@@ -195,7 +320,7 @@ ggsave(
 )
 
 # ------------------------------------------------------------------------------
-# 8. Guardar base clasificada
+# 9. Guardar base clasificada
 # ------------------------------------------------------------------------------
 
 write_parquet(
