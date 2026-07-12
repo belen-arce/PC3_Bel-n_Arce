@@ -6,5 +6,5 @@ sin_internet,Hogar,Ausencia de conexión a internet.,1 = Sí; 0 = No,33691,0
 n_indicadores_validos,Hogar,Cantidad de indicadores disponibles.,Valores de 0 a 4,33691,0
 indice_vulnerabilidad_simple,Hogar,Número de privaciones materiales.,Valores de 0 a 4,33691,0
 nivel_vulnerabilidad,Hogar,Nivel de vulnerabilidad material.,Baja; Media; Alta,33691,0
-acceso_olla_clasificado,Hogar,Acceso a alimentos de olla común.,Accedió; No accedió,33691,0
-tipologia_olla_vulnerabilidad,Hogar,Combinación entre acceso y vulnerabilidad.,Cuatro categorías,33691,0
+acceso_olla_clasificado,Hogar,Acceso a alimentos de olla común.,Accedió; No accedió,33214,1.4
+tipologia_olla_vulnerabilidad,Hogar,Combinación entre acceso y vulnerabilidad.,Cuatro categorías,33214,1.4

@@ -1,5 +1,5 @@
-variable,porcentaje
-porcentaje_piso_tierra,26.64
-porcentaje_agua_no_red_publica,15.91
-porcentaje_saneamiento_no_red_publica,36.77
-porcentaje_sin_internet,9.9
+Indicador,Hogares con privación (%)
+Piso de tierra,26.6
+Agua fuera de red pública,15.9
+Saneamiento fuera de red pública,36.8
+Sin conexión a internet,9.9
