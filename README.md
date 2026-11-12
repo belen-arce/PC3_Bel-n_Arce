@@ -1,5 +1,34 @@
 # Procesamiento de datos sobre ollas comunes y condiciones de vida con ENAHO 2024
 
+> **Proyecto académico de procesamiento reproducible en R** · ENAHO 2024 · Perú  
+> **Autores:** Belén Arce y Damián Tapia
+
+### Resumen para el portafolio
+
+Este proyecto organiza un flujo de trabajo en R para integrar información de vivienda, integrantes del hogar y acceso a alimentos de ollas comunes a partir de los módulos 100, 200 y 613 de la ENAHO 2024. Presenta decisiones metodológicas, control de calidad, transformaciones, tablas, gráficos y documentación de variables. Su propósito principal es **demostrar procedimientos de procesamiento y análisis descriptivo reproducible**, no estimar oficialmente la pobreza ni evaluar el efecto de las ollas comunes.
+
+**Competencias que evidencia:** integración de microdatos mediante llaves, distinción entre unidades de análisis, tratamiento de valores perdidos, recodificación, construcción exploratoria de indicadores, visualización de datos y documentación del procesamiento.
+
+**Herramientas:** R, tidyverse, arrow, janitor, naniar, renv y Git/GitHub.
+
+### Resultados y archivos para explorar
+
+- [Gráfico: acceso a alimentos de olla común](outputs/explorar/grafico_eda_acceso_olla.png)
+- [Gráfico: acceso según área de residencia](outputs/explorar/grafico_eda_olla_por_area.png)
+- [Gráfico: tipología de acceso y vulnerabilidad](outputs/clasificar/grafico_clasificacion_tipologia_olla_vulnerabilidad.png)
+- [Tabla descriptiva: acceso a olla común](outputs/explorar/eda_univariado_acceso_olla.csv)
+- [Scripts de procesamiento](scripts/)
+- [Codebook del proyecto](outputs/documentar/codebook_base_clasificada.csv)
+
+![Visualización descriptiva del acceso a alimentos de olla común, según registros analizados de ENAHO 2024](outputs/explorar/grafico_eda_acceso_olla.png)
+
+**Nota de interpretación:** las tablas y gráficos publicados son descriptivos y están construidos con recuentos sin ponderar. No deben interpretarse como estimaciones representativas del Perú. El índice de vulnerabilidad es una clasificación exploratoria del ejercicio y requiere precaución al comparar hogares cuando falta alguno de los cuatro indicadores. Para efectuar inferencias poblacionales sería necesario revisar el diseño muestral y los factores de expansión pertinentes.
+
+**Reproducibilidad:** los microdatos originales no se incluyen aquí. La sección «EXTRAER» explica cómo descargarlos desde el INEI; el archivo `renv.lock` registra dependencias. La ejecución completa depende de disponer de los módulos en las rutas especificadas. Esta propuesta de mejora documental no constituye una verificación de ejecución de todos los scripts de principio a fin.
+
+---
+
+
 ## Autorxs
 
 Belén Arce y Damián Tapia
