@@ -312,7 +312,7 @@ grafico_olla_area <- ggplot(
   labs(
     title = "Acceso a olla común según área de residencia",
     x = "Área de residencia",
-    y = "Hogares con acceso (%)",,
+    y = "Hogares con acceso (%)",
     caption = "Fuente: INEI, ENAHO 2024"
   ) +
   scale_y_continuous(
