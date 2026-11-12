@@ -56,7 +56,7 @@ El proyecto utiliza microdatos de la ENAHO 2024 para integrar información sobre
 ## Estructura del repositorio
 
 ```text
-PC3_Belén_Arce/
+enaho-2024-ollas-comunes/
 ├── datos/
 │   ├── crudos/
 │   └── procesados/
